@@ -158,3 +158,13 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+upx-4.0.2-win64/
+temp/
+onnx/Bert/chinese-roberta-wwm-ext-large/model.onnx
+onnx/Bert/deberta-v2-large-japanese/model.onnx
+onnx/Bert/deberta-v3-large/model.onnx
+onnx/models/Genshin/
+onnx/models/Genshin.json
+build.txt
+test.py

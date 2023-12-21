@@ -1,0 +1,14 @@
+numpy
+scipy
+transformers
+cn2an
+jieba
+g2p_en
+unicodedata
+num2words
+jaconv
+pypinyin
+numba
+colorlog
+chardet
+gradio
