@@ -20,8 +20,8 @@ def __split_jp_text(text: str):
         match_text = match.group().strip()
         if not match_text:
             continue
-        # 仅提取最多3个连续字符
-        if len(match_text) > 3:
+        # 仅提取最多5个连续字符
+        if len(match_text) > 5:
             continue
         zh_char_dict[str(match.end())] = match_text
 

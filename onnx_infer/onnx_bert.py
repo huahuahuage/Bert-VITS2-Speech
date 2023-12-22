@@ -126,19 +126,19 @@ class BertOnnx:
         if not tokenizer:
             raise KeyError(f"BERT_{language_str}分析器尚未载入。")
 
-        tokenized_tokens = tokenizer(text, return_tensors="pt")
+        tokenized_tokens = tokenizer(text)
 
         # 构造模型 输入参数
         input_feed = {
-            "input_ids": np.array(tokenized_tokens["input_ids"], dtype=np.int64),
+            "input_ids": np.array([tokenized_tokens["input_ids"]], dtype=np.int64),
             "attention_mask": np.array(
-                tokenized_tokens["attention_mask"], dtype=np.int64
+                [tokenized_tokens["attention_mask"]], dtype=np.int64
             ),
         }
         # 目前只有ZH的bert模型需要 token_type_ids 参数
         if language_str == "ZH":
             input_feed["token_type_ids"] = np.array(
-                tokenized_tokens["token_type_ids"], dtype=np.int64
+                [tokenized_tokens["token_type_ids"]], dtype=np.int64
             )
 
         return input_feed
