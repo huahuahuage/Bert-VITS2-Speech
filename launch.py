@@ -2,6 +2,14 @@ import ctypes
 
 ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
 
+# 全文忽略警告信息
+import warnings
+
+warnings.filterwarnings("ignore")
+import sys
+import imp
+imp.reload(sys)
+
 print("【程序声明】基于开源项目 Bert-VITS2.1 (https://github.com/fishaudio/Bert-VITS2)。")
 print(
     "【模型来源】红血球AE3803@bilibili/纳鲁塞缪希娜卡纳@bilibili/原神4.2/星穹铁道1.5/chinese-roberta-wwm-ext-large/deberta-v2-large-japanese/deberta-v3-large。"
@@ -12,13 +20,6 @@ print("【程序制作】花花花花花歌@bilibili。")
 print(
     "【郑重声明】严禁将此软件用于一切违反《中华人民共和国宪法》，《中华人民共和国刑法》，《中华人民共和国治安管理处罚法》和《中华人民共和国民法典》的用途，严禁将此软件用于任何政治相关用途。\n"
 )
-
-import sys
-
-# 全文忽略警告信息
-import warnings
-
-warnings.filterwarnings("ignore")
 
 from log import log_instance
 

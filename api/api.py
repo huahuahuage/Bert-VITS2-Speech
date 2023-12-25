@@ -32,12 +32,7 @@ def handle_startup_event():
     )
 
     if WEBUI_ENABLE:
-        log_instance.info(f"网页控制台 -> http://{HOST}:{PORT}/gradio")
-
-    log_instance.info(f"接口地址 -> {api_string_zh}")
-    log_instance.info("请求方式 -> GET")
-    log_instance.info("文件类型 -> wav\n")
-
+        log_instance.info(f"网页控制台 -> http://{HOST}:{PORT}/gradio\n")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

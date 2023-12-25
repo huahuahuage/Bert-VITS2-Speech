@@ -10,10 +10,10 @@ def __split_jp_text(text: str):
     这是因为日语中的汉字通常只用于表示具有特定含义的词，而平假名和片假名则用于表示日语中的音节。因此，连续出现三个或更多的中文字符在日语中并不常见，也不是日语的常规用法。
     当然，在一些特定的语境下，比如使用汉字表示某种特殊的含义或者是因为某种特定的文化背景，可能会出现连续出现三个或更多的中文字符的情况。但这种情况并不常见，也不是日语的常规用法。
 
-    所以这里匹配连续三个中文字符
+    所以这里匹配连续5个中文字符
     """
     jp_segments = []
-    # 仅提取最多3个连续字符的中文字符
+    # 仅提取最多5个连续字符的中文字符
     zh_pattern = re.compile(r"[\u4e00-\u9fff]+")
     zh_char_dict = {}
     for match in zh_pattern.finditer(text):
@@ -71,27 +71,50 @@ def __split_jp_text(text: str):
 
     # 将最后一个加入列表
     jp_segments.append((font_start, font_end, font_text, "JP"))
-    # 打印结果
 
-    return jp_segments
+    # 判断是否为纯数字
+    if len(jp_segments) != 1:
+        return jp_segments
+
+    match_text: str = jp_segments[0][2]
+    if match_text.isdigit():
+        return []
+    else:
+        return jp_segments
 
 
-def __split_jp_en_text(text: str):
+def __split_en_text(text: str):
     """
-    切割混合语言文本（日、英）
+    提取英语
     """
-    segments = []
+    en_segments = []
+    en_pattern = re.compile(r"[a-zA-Z0-9\s]+")
     # 提取包含连续英文数字空格的字符串
     en_pattern = re.compile(r"[a-zA-Z0-9\s]+")
     for match in en_pattern.finditer(text):
         match_text = match.group().strip()
         if not match_text:
             continue
-        segments.append((match.start(), match.end(), match_text, "EN"))
+        en_segments.append((match.start(), match.end(), match_text, "EN"))
 
+    if len(en_segments) != 1:
+        return en_segments
+
+    match_text: str = en_segments[0][2]
+    if match_text.isdigit():
+        return []
+    else:
+        return en_segments
+
+
+def __split_jp_en_text(text: str):
+    """
+    切割混合语言文本（日、英）
+    """
+    en_segments = __split_en_text(text)
     # 提取日语
     jp_segments = __split_jp_text(text)
-    segments = segments + jp_segments
+    segments = en_segments + jp_segments
 
     return segments
 
@@ -203,6 +226,7 @@ def __split_by_within_sentence(text: str):
     text_list = re.split(r"[\;\；\、\,\，]+", text)
     text_list = [text.strip() for text in text_list if re.search(r"\S", text)]
     return text_list
+
 
 def text_split_to_sentence(text: str) -> list:
     """
