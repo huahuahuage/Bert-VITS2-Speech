@@ -7,10 +7,10 @@ import jaconv
 
 from num2words import num2words
 from .symbols import punctuation, symbols
-# from .tokenizer import tokenizer_instance
+from .tokenizer import tokenizer_instance
 
 # 加载分析器
-# tokenizer = tokenizer_instance.JP
+tokenizer = tokenizer_instance.JP
 
 
 def kata2phoneme(text: str) -> str:
@@ -390,8 +390,8 @@ def g2p(norm_text):
     for i in sep_text:
         if i not in punctuation:
             # print('aaaa',tokenizer.tokenize(i))
-            sep_tokenized.append([f"▁{i}"])
-            # sep_tokenized.append(tokenizer.tokenize(i))
+            # sep_tokenized.append([f"▁{i}"])
+            sep_tokenized.append(tokenizer.tokenize(i))
         else:
             sep_tokenized.append([i])
 

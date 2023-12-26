@@ -15,7 +15,7 @@ for logger_name in DISABLED_LOGGER:
 
 # 创建新的logger
 log_instance = logging.getLogger()
-log_instance.setLevel(logging.INFO)
+log_instance.setLevel(logging.DEBUG)
 
 console_handler = logging.StreamHandler()
 console_formatter = colorlog.ColoredFormatter(

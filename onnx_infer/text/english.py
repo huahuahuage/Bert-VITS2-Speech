@@ -4,13 +4,12 @@ import re
 from g2p_en import G2p
 
 from .symbols import symbols
-
-# from .tokenizer import tokenizer_instance
+from .tokenizer import tokenizer_instance
 
 CMU_DICT_PATH = "onnx/Text/cmudict.rep"
 CACHE_PATH = "onnx/Text/cmudict_cache.pickle"
 
-# tokenizer = tokenizer_instance.EN
+tokenizer = tokenizer_instance.EN
 
 _g2p = G2p()
 
@@ -396,8 +395,8 @@ def g2p(text):
     # word2ph = []
     words = sep_text(text)
     # print(words)
-    tokens = [f"▁{i}" for i in words]
-    # tokens = [tokenizer.tokenize(i) for i in words]
+    # tokens = [f"▁{i}" for i in words]
+    tokens = [tokenizer.tokenize(i) for i in words]
     # print(tokens)
     for word in words:
         if word.upper() in eng_dict:

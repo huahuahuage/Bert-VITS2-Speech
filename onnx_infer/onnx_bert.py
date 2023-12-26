@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from config import config_instance
 
 from .text.japanese import text2sep_kata as japanese_text2sep_kata
-from .text.tokenizer import BertTokenizerDict
+from .text.tokenizer import tokenizer_instance
 
 ONNX_PROVIDERS = [config_instance.get("onnx_providers", "CPUExecutionProvider")]
 CHINESE_ONNX_LOCAL_DIR = config_instance.get("bert_chinese", "")
@@ -50,7 +50,7 @@ class BertModelsDict:
 class BertOnnx:
     def __init__(self) -> None:  
         log_instance.info("正在加载BERT分析器...")
-        self.tokenizer_instance = BertTokenizerDict()
+        self.tokenizer_instance = tokenizer_instance
         
         log_instance.info("正在加载BERT语言模型...")
         self.models_dict: BertModelsDict = BertModelsDict()
@@ -86,10 +86,11 @@ class BertOnnx:
         # 检查输出结果的合法性
         if language_str == "EN" and len(word2ph) != res.shape[0]:
             raise ValueError(
-                f"输入参数错误，len(word2ph) != res.shape[0] （len(word2ph):{len(word2ph)} res.shape[0]:{res.shape[0]}）。 "
+                f"Bert输出参数错误，len(word2ph) != res.shape[0] （len(word2ph):{len(word2ph)} res.shape[0]:{res.shape[0]}）。 "
             )
         else:
             pass
+        # pass
 
     @staticmethod
     def __handle_text(text: str, language_str: str = "ZH"):
@@ -164,6 +165,7 @@ class BertOnnx:
         """
         运行推理
         """
+
         # 检查语言类型参数是否合法
         if not self.__check_language(language_str):
             raise TypeError(f"语言类型输入错误：{language_str}。")
@@ -183,7 +185,7 @@ class BertOnnx:
 
         # 推理获取输出
         res = self.__run_onnx(inputs=input_feed, language_str=language_str)
-        log_instance.debug(f"原始onnx输出 {language_str} {str(res.dtype)}")
+        log_instance.debug(f"原始onnx输出 {language_str} {str(res.shape)}")
         # 检查输出结果的合法性
         self.__check_onnx_outputs(res=res, word2ph=word2ph, language_str=language_str)
 
