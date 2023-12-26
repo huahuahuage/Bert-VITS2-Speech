@@ -33,7 +33,3 @@ class BertTokenizerDict:
         if ENGLISH_ONNX_LOCAL_DIR
         else None
     )
-
-
-log_instance.info("正在加载BERT分析器...")
-tokenizer_instance = BertTokenizerDict()

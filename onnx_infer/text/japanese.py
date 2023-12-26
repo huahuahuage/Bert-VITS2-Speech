@@ -7,10 +7,11 @@ import jaconv
 
 from num2words import num2words
 from .symbols import punctuation, symbols
-from .tokenizer import tokenizer_instance
+# from .tokenizer import tokenizer_instance
 
 # 加载分析器
-tokenizer = tokenizer_instance.JP
+# tokenizer = tokenizer_instance.JP
+
 
 def kata2phoneme(text: str) -> str:
     """Convert katakana text to phonemes."""
@@ -388,7 +389,9 @@ def g2p(norm_text):
     sep_tokenized = []
     for i in sep_text:
         if i not in punctuation:
-            sep_tokenized.append(tokenizer.tokenize(i))
+            # print('aaaa',tokenizer.tokenize(i))
+            sep_tokenized.append([f"▁{i}"])
+            # sep_tokenized.append(tokenizer.tokenize(i))
         else:
             sep_tokenized.append([i])
 
@@ -412,17 +415,3 @@ def g2p(norm_text):
     word2ph = [1] + word2ph + [1]
     assert len(phones) == len(tones)
     return phones, tones, word2ph
-
-
-# if __name__ == "__main__":
-#     tokenizer = AutoTokenizer.from_pretrained("./data/bert/deberta-v2-large-japanese")
-#     text = "hello,こんにちは、世界ー！……"
-#     from text.japanese_bert import get_bert_feature
-
-#     text = text_normalize(text)
-#     print(text)
-
-#     phones, tones, word2ph = g2p(text)
-#     bert = get_bert_feature(text, word2ph)
-
-#     print(phones, tones, word2ph, bert.shape)

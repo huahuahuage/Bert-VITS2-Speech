@@ -5,6 +5,8 @@
     "onnx_providers": "CPUExecutionProvider",
     "onnx_tts_models": "onnx/models/Genshin/",
     "onnx_tts_models_chinese_mark": "中文",
+    "bert_enable": true,
+    "bert_default": "onnx/Bert/default/",
     "bert_chinese": "onnx/Bert/chinese-roberta-wwm-ext-large/",
     "bert_japanese": "onnx/Bert/deberta-v2-large-japanese/",
     "bert_english": "onnx/Bert/deberta-v3-large/"

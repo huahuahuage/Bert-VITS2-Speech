@@ -1,36 +1,18 @@
 import os
 from log import log_instance
 import numpy as np
-from typing import Callable
 import onnxruntime as ort
 from dataclasses import dataclass
 
 from config import config_instance
 
 from .text.japanese import text2sep_kata as japanese_text2sep_kata
-
-from .text.chinese import text_normalize as chinese_text_normalize
-from .text.japanese import text_normalize as japanese_text_normalize
-from .text.english import text_normalize as english_text_normalize
-
-from .text.symbols import _symbol_to_id, language_tone_start_map, language_id_map
-from .text.tokenizer import tokenizer_instance
+from .text.tokenizer import BertTokenizerDict
 
 ONNX_PROVIDERS = [config_instance.get("onnx_providers", "CPUExecutionProvider")]
 CHINESE_ONNX_LOCAL_DIR = config_instance.get("bert_chinese", "")
 JAPANESE_ONNX_LOCAL_DIR = config_instance.get("bert_japanese", "")
 ENGLISH_ONNX_LOCAL_DIR = config_instance.get("bert_english", "")
-
-
-@dataclass
-class LanguageModulesDict:
-    """
-    语言方法字典
-    """
-
-    ZH: Callable = chinese_text_normalize
-    JP: Callable = japanese_text_normalize
-    EN: Callable = english_text_normalize
 
 
 @dataclass
@@ -66,7 +48,10 @@ class BertModelsDict:
 
 
 class BertOnnx:
-    def __init__(self) -> None:
+    def __init__(self) -> None:  
+        log_instance.info("正在加载BERT分析器...")
+        self.tokenizer_instance = BertTokenizerDict()
+        
         log_instance.info("正在加载BERT语言模型...")
         self.models_dict: BertModelsDict = BertModelsDict()
 
@@ -121,7 +106,7 @@ class BertOnnx:
         构造分析器转换文本参数
         """
         # 加载分析器转换文本参数
-        tokenizer = getattr(tokenizer_instance, language_str)
+        tokenizer = getattr(self.tokenizer_instance, language_str)
 
         if not tokenizer:
             raise KeyError(f"BERT_{language_str}分析器尚未载入。")
@@ -207,34 +192,7 @@ class BertOnnx:
         log_instance.debug(f"最终bert结果 {language_str} {str(phone_level_feature.dtype)}")
         return phone_level_feature
 
-
 bert_onnx_instance = BertOnnx()
-language_modules_instance = LanguageModulesDict()
-
-
-def clean_text(text, language: str):
-    try:
-        language_module = getattr(language_modules_instance, language)
-    except AttributeError:
-        raise TypeError(f"语言类型输入错误：{language}。")
-    norm_text = language_module.text_normalize(text)
-    phones, tones, word2ph = language_module.g2p(norm_text)
-    return norm_text, phones, tones, word2ph
-
-
-def cleaned_text_to_sequence(cleaned_text, tones, language):
-    """Converts a string of text to a sequence of IDs corresponding to the symbols in the text.
-    Args:
-      text: string to convert to a sequence
-    Returns:
-      List of integers corresponding to the symbols in the text
-    """
-    phones = [_symbol_to_id[symbol] for symbol in cleaned_text]
-    tone_start = language_tone_start_map[language]
-    tones = [i + tone_start for i in tones]
-    lang_id = language_id_map[language]
-    lang_ids = [lang_id for i in phones]
-    return phones, tones, lang_ids
 
 
 def get_bert(norm_text: str, word2ph: list, language: np.int64):

@@ -25,9 +25,11 @@ def __split_jp_text(text: str):
             continue
         zh_char_dict[str(match.end())] = match_text
 
+    # print(zh_char_dict)
+
     # 提取日文
     jp_pattern = re.compile(
-        r"[\u3040-\u309F\u30A0-\u30FF\uFF65-\uFF9F0-9\s]+"
+        r"[\u3040-\u309F\u30A0-\u30FF\uFF65-\uFF9F々0-9\s]+"
     )  # 日文字符的Unicode范围
 
     jp_chars_list = []
@@ -48,6 +50,20 @@ def __split_jp_text(text: str):
 
     if len(jp_chars_list) == 0:
         return []
+
+    # 获取最后一个日语字符后面的中文
+    last_jp_char_end = jp_chars_list[-1][1]
+    for zh_char_end in zh_char_dict:
+        zh_char_length = len(zh_char_dict[zh_char_end])
+        if last_jp_char_end != int(zh_char_end) - len(zh_char_dict[zh_char_end]):
+            continue
+        jp_chars_list.append(
+            (
+                last_jp_char_end,
+                last_jp_char_end + zh_char_length,
+                zh_char_dict[zh_char_end],
+            )
+        )
 
     jp_segments = []
     font_jp_chars_tuple = jp_chars_list[0]
@@ -189,6 +205,7 @@ def split_text(text: str) -> Tuple[list, list]:
     自动切割混合文本
     """
     other_text_segments = __split_jp_en_text(text)
+    # print(other_text_segments)
     text_segments = __divide_text(text, other_text_segments)
 
     if not text_segments:
@@ -237,6 +254,7 @@ def text_split_to_sentence(text: str) -> list:
     """
     # 首先按段落划分
     text_paragraph_list = __split_by_paragraph(text=text)
+    # print(text_paragraph_list)
     if len(text_paragraph_list) == 0:
         return []
     third_list = []

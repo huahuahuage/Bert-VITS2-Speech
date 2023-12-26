@@ -181,4 +181,4 @@ language_tone_start_map = {
     "EN": num_zh_tones + num_ja_tones,
 }
 
-_symbol_to_id = {s: i for i, s in enumerate(symbols)}
+symbol_to_id = {s: i for i, s in enumerate(symbols)}

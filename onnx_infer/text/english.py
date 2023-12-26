@@ -4,12 +4,13 @@ import re
 from g2p_en import G2p
 
 from .symbols import symbols
-from .tokenizer import tokenizer_instance
+
+# from .tokenizer import tokenizer_instance
 
 CMU_DICT_PATH = "onnx/Text/cmudict.rep"
 CACHE_PATH = "onnx/Text/cmudict_cache.pickle"
 
-tokenizer = tokenizer_instance.EN
+# tokenizer = tokenizer_instance.EN
 
 _g2p = G2p()
 
@@ -394,7 +395,10 @@ def g2p(text):
     tones = []
     # word2ph = []
     words = sep_text(text)
-    tokens = [tokenizer.tokenize(i) for i in words]
+    # print(words)
+    tokens = [f"▁{i}" for i in words]
+    # tokens = [tokenizer.tokenize(i) for i in words]
+    # print(tokens)
     for word in words:
         if word.upper() in eng_dict:
             phns, tns = refine_syllables(eng_dict[word.upper()])
@@ -433,9 +437,3 @@ def g2p(text):
     assert len(phones) == sum(word2ph), text
 
     return phones, tones, word2ph
-
-
-def get_bert_feature(text, word2ph):
-    from tools.text import english_bert_mock
-
-    return english_bert_mock.get_bert_feature(text, word2ph)

@@ -52,12 +52,13 @@ else:
     app = api_app
 
 
+
 if __name__ == "__main__":
     try:
         uvicorn.run(app=app, host=HOST, port=PORT, log_level="critical")
     except Exception as e:
         log_instance.error("程序启动失败：", e)
-    # 用户输入任意键来退出循环
+    # 用户输入任意键来退出
     log_instance.info("按下任意键退出程序...")
     input()
-    sys.exit()
+

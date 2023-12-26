@@ -8,8 +8,13 @@ import onnxruntime as ort
 from log import log_instance
 from config import read_config
 from config import config_instance
-from .text.cleaner import clean_text
-from .onnx_bert import get_bert, cleaned_text_to_sequence
+from .text.cleaner import clean_text, cleaned_text_to_sequence
+
+BERT_ENABLE = config_instance.get("bert_enable", True)
+
+if BERT_ENABLE:
+    from .onnx_bert import get_bert
+
 
 # 获取模型中包含的中文角色标记
 CHINESE_CHARACTER_MARK = config_instance.get("onnx_tts_models_chinese_mark", "中文")
@@ -234,6 +239,11 @@ def generate_path(duration, mask):
 
 
 def intersperse(lst, item):
+    """
+    在列表的每个元素之间插入一个分隔符元素
+
+    如： [1, '-', 2, '-', 3, '-', 4]
+    """
     result = [item] * (len(lst) * 2 + 1)
     result[1::2] = lst
     return result
@@ -252,22 +262,27 @@ def get_text(text: str, language: str, add_blank: bool = True) -> tuple:
         raise TypeError(f"语言类型输入错误：{language}。")
 
     norm_text, phone, tone, word2ph = clean_text(text, language)
+    # print(norm_text, phone, tone, word2ph)
+    # 将phone, tone, language转化为对应id表示
     phone, tone, language = cleaned_text_to_sequence(phone, tone, language)
 
     # ？？添加空白间隔
     if add_blank:
         phone, tone, language, word2ph = __add_blank(phone, tone, language, word2ph)
-
-    bert_ori: np.float32 = get_bert(norm_text, word2ph, language_str)
-    del word2ph
-
-    if bert_ori.shape[0] != len(phone):
-        raise KeyError("BERT推理结果与预期不符合。")
+    # print(len(phone), sum(word2ph))
 
     bert_list: list = [np.zeros([len(phone), 1024], dtype=np.float32)] * len(
         language_list
     )
-    bert_list[language_index] = bert_ori
+
+    if BERT_ENABLE:
+        bert_ori: np.float32 = get_bert(norm_text, word2ph, language_str)
+        if bert_ori.shape[0] != len(phone):
+            raise KeyError("BERT推理结果与预期不符合。")
+
+        bert_list[language_index] = bert_ori
+
+    del word2ph
 
     res_tuple = tuple(bert_list) + (
         np.expand_dims(np.array(phone, dtype=np.int64), 0),
