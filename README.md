@@ -37,6 +37,8 @@
 
 ![Alt text](image-3.png)
 
+可选择是否开启bert推理（默认启用），修改 config.json 文件 bert-enable配置项即可
+
 ## 训练模型转ONNX说明
 
 （仅适用2.1版本）
