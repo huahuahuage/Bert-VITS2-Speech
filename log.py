@@ -1,5 +1,10 @@
 import logging
 import colorlog
+import jieba
+
+# 调整jieba日志输出级别
+jieba.setLogLevel(jieba.logging.ERROR)
+
 
 # 禁止某些模块日志输出
 DISABLED_LOGGER = ["gradio.processing_utils", "gradio", "httpx"]

@@ -1,8 +1,3 @@
-# 禁用jieba日志输出
-import jieba
-
-jieba.setLogLevel(jieba.logging.INFO)
-
 import os
 import numpy as np
 from uuid import uuid4
