@@ -35,6 +35,8 @@ def __split_jp_text(text: str):
         match_text = match.group().strip()
         if not match_text:
             continue
+        if match_text.isdigit():
+            continue
         char_start = match.start()
         char_end = match.end()
         # 是否有相邻中文字符，如果有，标记为日语
@@ -56,7 +58,8 @@ def __split_jp_text(text: str):
     for index, jp_chars_tuple in enumerate(jp_chars_list):
         if index == 0:
             continue
-        start, end, text = jp_chars_tuple
+        start, end, text:str = jp_chars_tuple
+
         if start == font_end:
             # 如果当前元素的起始位置与前一个元素的结束位置相同，则将文本拼接到前一个元素的文本后面
             font_end = end
