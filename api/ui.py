@@ -174,15 +174,6 @@ def webui():
                 randomize=True,
                 label="随机种子 Seed",
             )
-            slider_seed = gr.Slider(
-                minimum=0,
-                maximum=1000000,
-                value=114514,
-                step=1000,
-                interactive=True,
-                randomize=True,
-                label="随机种子 Seed",
-            )
             within_interval = gr.Slider(
                 minimum=0,
                 maximum=10.0,
