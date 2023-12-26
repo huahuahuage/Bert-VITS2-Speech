@@ -52,7 +52,7 @@ class BertModelsDict:
             os.path.join(JAPANESE_ONNX_LOCAL_DIR, "model.onnx"),
             providers=ONNX_PROVIDERS,
         )
-        if CHINESE_ONNX_LOCAL_DIR
+        if JAPANESE_ONNX_LOCAL_DIR
         else None
     )
     EN: ort.InferenceSession = (
