@@ -29,22 +29,22 @@ class BertModelsDict:
         if CHINESE_ONNX_LOCAL_DIR
         else None
     )
-    JP: ort.InferenceSession = (
-        ort.InferenceSession(
-            os.path.join(JAPANESE_ONNX_LOCAL_DIR, "model.onnx"),
-            providers=ONNX_PROVIDERS,
-        )
-        if JAPANESE_ONNX_LOCAL_DIR
-        else None
-    )
-    EN: ort.InferenceSession = (
-        ort.InferenceSession(
-            os.path.join(ENGLISH_ONNX_LOCAL_DIR, "model.onnx"),
-            providers=ONNX_PROVIDERS,
-        )
-        if ENGLISH_ONNX_LOCAL_DIR
-        else None
-    )
+    # JP: ort.InferenceSession = (
+    #     ort.InferenceSession(
+    #         os.path.join(JAPANESE_ONNX_LOCAL_DIR, "model.onnx"),
+    #         providers=ONNX_PROVIDERS,
+    #     )
+    #     if JAPANESE_ONNX_LOCAL_DIR
+    #     else None
+    # )
+    # EN: ort.InferenceSession = (
+    #     ort.InferenceSession(
+    #         os.path.join(ENGLISH_ONNX_LOCAL_DIR, "model.onnx"),
+    #         providers=ONNX_PROVIDERS,
+    #     )
+    #     if ENGLISH_ONNX_LOCAL_DIR
+    #     else None
+    # )
 
 
 class BertOnnx:

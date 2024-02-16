@@ -36,30 +36,6 @@ ONNX_MODELS_PATH = {
 }
 
 
-class SpeakerMap:
-    """
-    多语言关系表
-    """
-
-    def __init__(self) -> None:
-        log_instance.info("正在加载模型发音人多语言关系表...")
-        self.map_data: dict = read_config("speakers_map.json")
-
-    def get_jp_speaker_name(self, speaker_name: str):
-        """
-        获取对应日语发音人名称
-        """
-        speaker_name_dict: dict = self.map_data.get(speaker_name, {})
-        return speaker_name_dict.get("JP", speaker_name)
-
-    def get_en_speaker_name(self, speaker_name: str):
-        """
-        获取对应英语发音人名称
-        """
-        speaker_name_dict: dict = self.map_data.get(speaker_name, {})
-        return speaker_name_dict.get("EN", speaker_name)
-
-
 @dataclass
 class ONNX_MODELS:
     enc: ort.InferenceSession = ort.InferenceSession(
@@ -275,8 +251,8 @@ def get_text(text: str, language: str, add_blank: bool = True) -> tuple:
         language_list
     )
 
-    if BERT_ENABLE:
-        bert_ori: np.float32 = get_bert(norm_text, word2ph, language_str)
+    if BERT_ENABLE and language_str == "ZH":
+        bert_ori: np.float32 = get_bert(norm_text, word2ph, language=language_str)
         if bert_ori.shape[0] != len(phone):
             raise KeyError("BERT推理结果与预期不符合。")
 
@@ -302,7 +278,6 @@ class INFER_ONNX:
         self.speakers_list = self.onnx_runtime_instance.get_config(
             "Characters", default=[]
         )
-        self.speaker_map = SpeakerMap()
 
     def get_speaker_id(self, speaker_name: str, chinese_only: bool = True) -> int:
         """
@@ -316,19 +291,6 @@ class INFER_ONNX:
             else:
                 return index
         return -1
-
-    def get_full_speaker_name(self, speaker_name: str, language_str: str = "ZH"):
-        """
-        获取发音人的完整名称，映射关系由 speakers_map.json 决定
-        如果无法找到，则返回原来的名称
-        """
-        if language_str == "JP":
-            return self.speaker_map.get_jp_speaker_name(speaker_name)
-
-        if language_str == "EN":
-            return self.speaker_map.get_en_speaker_name(speaker_name)
-
-        return speaker_name
 
     @staticmethod
     def __clamp(
@@ -443,15 +405,10 @@ class INFER_ONNX:
             sdp_ratio, noise_scale, noise_scale_w, length_scale, emotion
         )
         # 到 speakers_map.json 内查找是否存在对应关系，如果有，则返回对应发音人真实名称
-        full_speaker_name = self.get_full_speaker_name(
-            speaker_name=speaker_name, language_str=language
-        )
+        full_speaker_name = speaker_name
         log_instance.debug(f"获取发音人真实名称 {speaker_name} -> {full_speaker_name}")
-
-        speaker_id = self.get_speaker_id(
-            full_speaker_name,
-            True if language == "ZH" else False,
-        )
+        
+        speaker_id = self.get_speaker_id(full_speaker_name,chinese_only = True)
 
         if speaker_id == -1:
             raise ValueError(f"无法在模型中找到发音人信息：{speaker_name}。")

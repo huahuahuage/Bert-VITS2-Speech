@@ -13,6 +13,7 @@ from .tts import tts_instance
 # 取读配置文件
 from log import log_instance
 from config import config_instance
+from launch_message import launch_message_instance
 
 HOST = config_instance.get("server_host", "127.0.0.1")
 PORT = config_instance.get("server_port", 7880)
@@ -25,6 +26,7 @@ def handle_startup_event():
     log_instance.info(
         f"程序资源载入已完成，耗时：{str(time_for_launch_end - time_for_launch_start)}\n"
     )
+    launch_message_instance.update("程序资源载入已完成")
     api_string_zh = (
         f"http://{HOST}:{PORT}/api/tts?speaker=珊瑚宫心海&text="
         + "{text}"
@@ -33,6 +35,7 @@ def handle_startup_event():
 
     if WEBUI_ENABLE:
         log_instance.info(f"网页控制台 -> http://{HOST}:{PORT}/gradio\n")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

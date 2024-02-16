@@ -12,8 +12,8 @@ HOST = config_instance.get("server_host", "127.0.0.1")
 PORT = config_instance.get("server_port", 7880)
 
 SPEAKERS_LIST = tts_instance.get_speakers_list()
-LANGUAGES_LIST = ["自动识别", "仅中文", "仅英文", "仅日文"]
-LANGUAGES_DICT = {"自动识别": "auto", "仅中文": "ZH", "仅英文": "EN", "仅日文": "JP"}
+LANGUAGES_LIST = ["自动识别[中文]", "仅中文"]
+LANGUAGES_DICT = {"自动识别[中文]": "auto", "仅中文": "ZH"}
 
 
 def __handle_speaker_name(speaker_name):
