@@ -1,5 +1,5 @@
 import re
-from typing import Tuple
+from typing import Tuple,List
 
 
 def __split_jp_text(text: str):
@@ -116,14 +116,14 @@ def __split_en_text(text: str):
             continue
         en_segments.append((match.start(), match.end(), match_text, "EN"))
 
-    if len(en_segments) != 1:
-        return en_segments
-
-    match_text: str = en_segments[0][2]
-    if match_text.isdigit():
-        return []
-    else:
-        return en_segments
+    # 如果非全数字，直接返回
+    for segment in en_segments:
+        match_text: str = segment[2]
+        if not match_text.isdigit():
+            return en_segments
+    
+    # 如果是全数据，返回空
+    return []
 
 
 def __split_jp_en_text(text: str):
@@ -200,13 +200,43 @@ def __divide_text(text: str, intervals: list):
     return parts
 
 
+def __correct_digst_to_zh(text_segments:List[Tuple[int,int,str,str]]):
+    """
+    修正混合句子中的数字为中文
+    """
+    # 判断句子中是否存在中文混合
+    is_zh_mix = False
+    for segment in text_segments:
+        if segment[3] != 'ZH':
+            continue
+        is_zh_mix = True
+        break
+    
+    if not is_zh_mix:
+        return text_segments
+    
+    # 修正混合句子中的数字为中文
+    new_text_segments = []
+    for segment in iter(text_segments):
+        if not segment[2].isdigit():
+            new_text_segments.append(segment)
+            continue
+        new_text_segments.append((segment[0],segment[1],segment[2],"ZH"))
+
+    return new_text_segments
+
 def split_text(text: str) -> Tuple[list, list]:
     """
     自动切割混合文本
     """
+    print(text)
     other_text_segments = __split_jp_en_text(text)
+    print(other_text_segments)
     # print(other_text_segments)
     text_segments = __divide_text(text, other_text_segments)
+    print(text_segments)
+    text_segments = __correct_digst_to_zh(text_segments)
+    print(text_segments)
 
     if not text_segments:
         return None
@@ -216,6 +246,7 @@ def split_text(text: str) -> Tuple[list, list]:
     for text_segment in text_segments:
         text_list.append(text_segment[2])
         language_list.append(text_segment[3])
+    print(text_list, language_list)
     return text_list, language_list
 
 
