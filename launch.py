@@ -1,6 +1,9 @@
-import ctypes
+from api.utils import os_type_instance
 
-ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
+if os_type_instance.type == "Windows":
+    import ctypes
+
+    ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
 
 # 全文忽略警告信息
 import warnings
@@ -8,9 +11,12 @@ import warnings
 warnings.filterwarnings("ignore")
 import sys
 import imp
+
 imp.reload(sys)
 
-print("【程序声明】基于开源项目 Bert-VITS2.1 (https://github.com/fishaudio/Bert-VITS2)。")
+print(
+    "【程序声明】基于开源项目 Bert-VITS2.1 (https://github.com/fishaudio/Bert-VITS2)。"
+)
 print(
     "【模型来源】红血球AE3803@bilibili/纳鲁塞缪希娜卡纳@bilibili/原神4.2/星穹铁道1.5/chinese-roberta-wwm-ext-large/deberta-v2-large-japanese/deberta-v3-large。"
 )
@@ -52,7 +58,6 @@ else:
     app = api_app
 
 
-
 if __name__ == "__main__":
     try:
         uvicorn.run(app=app, host=HOST, port=PORT, log_level="critical")
@@ -61,4 +66,3 @@ if __name__ == "__main__":
     # 用户输入任意键来退出
     log_instance.info("按下任意键退出程序...")
     input()
-

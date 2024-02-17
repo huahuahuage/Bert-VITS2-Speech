@@ -1,4 +1,5 @@
 import os
+import platform
 import shutil
 import pyperclip
 from log import log_instance
@@ -23,3 +24,23 @@ def copy_to_clipboard(text: str):
     复制字符串到剪切板
     """
     pyperclip.copy(text)
+
+
+class OSType:
+    def __init__(self) -> None:
+        self.type = self.check_os()
+
+    def check_os():
+        """
+        检查操作系统类型
+        """
+        system = platform.system()
+        if system == "Windows":
+            return "Windows"
+        elif system == "Linux":
+            return "Linux"
+        else:
+            return "MacOS"
+
+
+os_type_instance = OSType()
