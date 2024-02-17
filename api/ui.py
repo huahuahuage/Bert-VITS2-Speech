@@ -5,6 +5,7 @@ import gradio as gr
 
 from .tts import tts_instance
 from .utils import rebuild_temp_dir, copy_to_clipboard
+from .utils import os_type_instance
 
 from config import config_instance
 
@@ -230,9 +231,10 @@ def webui():
             ],
         )
 
-    # 重新建立缓存文件夹
-    temp_path = os.path.join(os.path.dirname(os.getenv("APPDATA")), "Temp/gradio/")
-    rebuild_temp_dir(temp_path, tips="正在清空Gradio组件语音缓存...")
+    # 重新建立缓存文件夹(for windows)
+    if os_type_instance.type == "Windows":
+        temp_path = os.path.join(os.path.dirname(os.getenv("APPDATA")), "Temp/gradio/")
+        rebuild_temp_dir(temp_path, tips="正在清空Gradio组件语音缓存...")
 
     return app
 

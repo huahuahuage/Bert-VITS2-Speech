@@ -1,8 +1,14 @@
-import ctypes
 from launch_message import launch_message_instance
-ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
+from api.utils import os_type_instance
+
+if os_type_instance.type == "Windows":
+    import ctypes
+
+    ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
+
 
 import os
+
 # 全文忽略警告信息
 import warnings
 

@@ -1,5 +1,6 @@
 import os
 import time
+import platform
 import threading
 import shutil
 import pyperclip
@@ -51,3 +52,23 @@ def clean_auto_loop(dir_path, interval: int = 0):
 
     t = threading.Thread(target=__task)
     t.start()
+
+
+class OSType:
+    def __init__(self) -> None:
+        self.type = self.check_os()
+
+    def check_os():
+        """
+        检查操作系统类型
+        """
+        system = platform.system()
+        if system == "Windows":
+            return "Windows"
+        elif system == "Linux":
+            return "Linux"
+        else:
+            return "MacOS"
+
+
+os_type_instance = OSType()
