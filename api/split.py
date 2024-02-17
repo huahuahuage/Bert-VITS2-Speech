@@ -29,7 +29,7 @@ def __split_jp_text(text: str):
 
     # 提取日文
     jp_pattern = re.compile(
-        r"[\u3040-\u309F\u30A0-\u30FF\uFF65-\uFF9F々0-9\s]+"
+        r"[\u3040-\u309F\u30A0-\u30FF\uFF65-\uFF9F々\s]+"
     )  # 日文字符的Unicode范围
 
     jp_chars_list = []
@@ -107,9 +107,8 @@ def __split_en_text(text: str):
     提取英语
     """
     en_segments = []
-    en_pattern = re.compile(r"[a-zA-Z0-9\s]+")
     # 提取包含连续英文数字空格的字符串
-    en_pattern = re.compile(r"[a-zA-Z0-9\s]+")
+    en_pattern = re.compile(r"[a-zA-Z\s]+")
     for match in en_pattern.finditer(text):
         match_text = match.group().strip()
         if not match_text:
@@ -229,14 +228,14 @@ def split_text(text: str) -> Tuple[list, list]:
     """
     自动切割混合文本
     """
-    print(text)
+    # print(text)
     other_text_segments = __split_jp_en_text(text)
-    print(other_text_segments)
+    # print(other_text_segments)
     # print(other_text_segments)
     text_segments = __divide_text(text, other_text_segments)
-    print(text_segments)
-    text_segments = __correct_digst_to_zh(text_segments)
-    print(text_segments)
+    # print(text_segments)
+    # text_segments = __correct_digst_to_zh(text_segments)
+    # print(text_segments)
 
     if not text_segments:
         return None
@@ -246,7 +245,7 @@ def split_text(text: str) -> Tuple[list, list]:
     for text_segment in text_segments:
         text_list.append(text_segment[2])
         language_list.append(text_segment[3])
-    print(text_list, language_list)
+    # print(text_list, language_list)
     return text_list, language_list
 
 
