@@ -2,6 +2,7 @@ import ctypes
 from launch_message import launch_message_instance
 ctypes.windll.kernel32.SetConsoleTitleW("花花 Bert-VITS2 原神/星铁语音合成API助手")
 
+import os
 # 全文忽略警告信息
 import warnings
 
@@ -37,14 +38,17 @@ log_config["formatters"]["default"]["fmt"] = "[%(levelname)s] - %(message)s"
 # 取读配置文件
 from config import config_instance
 
+from api.utils import clean_auto_loop
+
 HOST = config_instance.get("server_host", "127.0.0.1")
 PORT = config_instance.get("server_port", 7880)
 WEBUI_ENABLE = config_instance.get("webui_enable", True)
+CLEAN_INTERVAL = config_instance.get("clean_interval", 0)
+TEMP_PATH = os.path.abspath("./temp")
 
 log_instance.info("欢迎使用 花花 Bert-VITS2 原神/星铁语音合成API助手。")
 log_instance.info(f"程序资源正在载入中，请稍候...")
 launch_message_instance.update("资源载入中，请稍候...")
-
 
 from api.api import app as api_app
 
@@ -54,6 +58,9 @@ if WEBUI_ENABLE:
     app = gradio.mount_gradio_app(app=api_app, blocks=webui_app, path="/gradio")
 else:
     app = api_app
+
+# 加载自动清理程序
+clean_auto_loop(TEMP_PATH, interval=CLEAN_INTERVAL)
 
 
 def run_server():

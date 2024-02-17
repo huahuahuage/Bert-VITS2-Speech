@@ -2,6 +2,7 @@
     "server_host": "127.0.0.1",
     "server_port": 7880,
     "webui_enable": true,
+    "clean_interval": 0,
     "onnx_providers": "CPUExecutionProvider",
     "onnx_tts_models": "onnx/models/Genshin/",
     "onnx_tts_models_chinese_mark": "中文",

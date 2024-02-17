@@ -1,4 +1,6 @@
 import os
+import time
+import threading
 import shutil
 import pyperclip
 from log import log_instance
@@ -23,3 +25,29 @@ def copy_to_clipboard(text: str):
     复制字符串到剪切板
     """
     pyperclip.copy(text)
+
+
+def clean_auto_loop(dir_path, interval: int = 0):
+    """
+    自动清理缓存
+    """
+    if interval == 0:
+        return
+
+    def __task():
+        while True:
+            time.sleep(interval * 60)
+            # 获取当前目录下所有文件
+            files = os.listdir(dir_path)
+            # 逐个删除文件
+            for file in files:
+                file_path = os.path.join(dir_path, file)
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                        print(f"文件 {file} 已删除")
+                except OSError as e:
+                    print(f"删除文件 {file} 时发生错误: {e.strerror}")
+
+    t = threading.Thread(target=__task)
+    t.start()
