@@ -30,7 +30,7 @@ class OSType:
     def __init__(self) -> None:
         self.type = self.check_os()
 
-    def check_os():
+    def check_os(self):
         """
         检查操作系统类型
         """
